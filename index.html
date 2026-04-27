@@ -72,12 +72,12 @@ navigator.geolocation.watchPosition(p => {
         const mLng = lng + (Math.random() - 0.5) * 0.001;
         
         const newMonster = L.circleMarker([mLat, mLng], {
-    radius: 30,           // 大きさ
-    fillColor: "#ff0000", // 中の色（赤）
-    color: "#ffffff",     // 枠線の色（白）
-    weight: 2,            // 枠線の太さ
-    opacity: 1,           // 枠線の透明度
-    fillOpacity: 0.8      // 中の色の透明度
+    radius: 30,           // 見た目の大きさは小さめ
+    fillColor: "#ff0000",
+    color: "transparent", // 枠線を透明にする
+    weight: 70,            // ★この透明な枠線が「当たり判定」になる！
+    fillOpacity: 0.8,
+    interactive: true      // クリックに反応するようにする
 }).addTo(map);
         
         // 共通ルールを覚えさせる
