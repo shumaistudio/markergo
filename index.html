@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        /* ここに【CSS枠】を貼り付ける */
+        body { margin: 0; }
+        #map { height: 100vh; width: 100vw; }
+    </style>
+</head>
+<body>
+    <div id="map"></div>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+    <script>
+// --- 1. 初期設定 ---
+// 地図を固定（ズーム18、操作不可）
+const map = L.map('map', {
+    dragging: false,
+    touchZoom: false,
+    scrollWheelZoom: false,
+    doubleClickZoom: false,
+    zoomControl: false
+}).setView([35.1709, 136.8815], 18);
+
+// 地図のデザイン（CARTO Voyager）
+L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
+    attribution: '© CARTO'
+}).addTo(map);
+
+// プレイヤー（自分）のピン
+const player = L.marker([35.1709, 136.8815]).addTo(map);
+
+// カウンター（捕まえた数）
+let caughtCount = 0;
+
+// --- 2. 共通ルール（クリックされた時の動作） ---
+const onMonsterClick = (e) => {
+    const m = e.target;
+    
+    // 捕まえた数をプラス
+    caughtCount++;
+    
+    // ポップアップを出して消す
+    m.bindPopup(`ゲット！ (${caughtCount}匹目)`).openPopup();
+    
+    setTimeout(() => {
+        map.removeLayer(m);
+    }, 1000);
+    
+    console.log("現在の捕獲数:", caughtCount);
+};
+
+// --- 3. GPS監視システム ---
+let lastPos = null;
+
+navigator.geolocation.watchPosition(p => {
+    const lat = p.coords.latitude;
+    const lng = p.coords.longitude;
+    const currentPos = L.latLng(lat, lng);
+
+    // 自分の位置とカメラを更新
+    player.setLatLng(currentPos);
+    map.panTo(currentPos, { animate: true });
+
+    // 1メートル歩くごとに新種を1匹出す
+    if (!lastPos || currentPos.distanceTo(lastPos) > 1) {
+        
+        // 自分の周りにランダムに出現
+        const mLat = lat + (Math.random() - 0.5) * 0.001;
+        const mLng = lng + (Math.random() - 0.5) * 0.001;
+        
+        const newMonster = L.marker([mLat, mLng]).addTo(map);
+        
+        // 共通ルールを覚えさせる
+        newMonster.on('click', onMonsterClick);
+
+        lastPos = currentPos;
+        console.log("新種出現！");
+    }
+}, (err) => {
+    console.error("GPSエラー:", err);
+}, { 
+    enableHighAccuracy: true 
+});
+    </script>
+</body>
+</html>
