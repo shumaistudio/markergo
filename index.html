@@ -65,7 +65,7 @@ navigator.geolocation.watchPosition(p => {
     map.panTo(currentPos, { animate: true });
 
     // 1メートル歩くごとに新種を1匹出す
-    if (!lastPos || currentPos.distanceTo(lastPos) > 10 && currentPos.distanceTo(lastPos) < 50 ) {
+    if (!lastPos || currentPos.distanceTo(lastPos) > 10 && currentPos.distanceTo(lastPos) < 100 ) {
         
         // 自分の周りにランダムに出現
         const mLat = lat + (Math.random() - 0.5) * 0.001;
