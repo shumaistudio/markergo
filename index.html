@@ -43,7 +43,7 @@ const onMonsterClick = (e) => {
     caughtCount++;
     
     // ポップアップを出して消す
-    m.bindPopup(`ゲット！ (${caughtCount}匹目)`).openPopup();
+    m.bindPopup(`マーカーゲット！ (${caughtCount}匹目)`).openPopup();
     
     setTimeout(() => {
         map.removeLayer(m);
@@ -65,13 +65,20 @@ navigator.geolocation.watchPosition(p => {
     map.panTo(currentPos, { animate: true });
 
     // 1メートル歩くごとに新種を1匹出す
-    if (!lastPos || currentPos.distanceTo(lastPos) > 1) {
+    if (!lastPos || currentPos.distanceTo(lastPos) > 10) {
         
         // 自分の周りにランダムに出現
         const mLat = lat + (Math.random() - 0.5) * 0.001;
         const mLng = lng + (Math.random() - 0.5) * 0.001;
         
-        const newMonster = L.marker([mLat, mLng]).addTo(map);
+        const newMonster = L.circleMarker([mLat, mLng], {
+    radius: 10,           // 大きさ
+    fillColor: "#ff0000", // 中の色（赤）
+    color: "#ffffff",     // 枠線の色（白）
+    weight: 2,            // 枠線の太さ
+    opacity: 1,           // 枠線の透明度
+    fillOpacity: 0.8      // 中の色の透明度
+}).addTo(map);
         
         // 共通ルールを覚えさせる
         newMonster.on('click', onMonsterClick);
