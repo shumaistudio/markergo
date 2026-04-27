@@ -22,7 +22,7 @@ const map = L.map('map', {
     scrollWheelZoom: false,
     doubleClickZoom: false,
     zoomControl: false
-}).setView([35.1709, 136.8815], 18);
+}).setView([35.1709, 136.8815], 30);
 
 // 地図のデザイン（CARTO Voyager）
 L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
@@ -65,14 +65,14 @@ navigator.geolocation.watchPosition(p => {
     map.panTo(currentPos, { animate: true });
 
     // 1メートル歩くごとに新種を1匹出す
-    if (!lastPos || currentPos.distanceTo(lastPos) > 80) {
+    if (!lastPos || currentPos.distanceTo(lastPos) > 10 && currentPos.distanceTo(lastPos) < 50 ) {
         
         // 自分の周りにランダムに出現
         const mLat = lat + (Math.random() - 0.5) * 0.001;
         const mLng = lng + (Math.random() - 0.5) * 0.001;
         
         const newMonster = L.circleMarker([mLat, mLng], {
-    radius: 10,           // 大きさ
+    radius: 30,           // 大きさ
     fillColor: "#ff0000", // 中の色（赤）
     color: "#ffffff",     // 枠線の色（白）
     weight: 2,            // 枠線の太さ
